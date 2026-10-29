@@ -1,0 +1,2005 @@
+/* ==========================================================================
+   Race Pulse 3D — identité visuelle
+   Même palette que race-pulse (2D) : vert profond, jaune chaud, asphalte
+   sombre ; accents cyan, corail, violet et vert clair.
+   ========================================================================== */
+
+:root {
+  --vert-nuit: #03150e;
+  --vert-profond: #052b1c;
+
+  --jaune: #ffc93c;
+  --cyan: #22d3ee;
+  --corail: #ff6b57;
+  --violet: #a78bfa;
+  --vert-clair: #7ee787;
+
+  --texte: #eaf6ef;
+  --texte-doux: #9dc3b0;
+  --trait: rgba(126, 231, 135, 0.16);
+
+  --rayon: 18px;
+  --ombre: 0 18px 44px rgba(0, 0, 0, 0.42);
+
+  color-scheme: dark;
+  font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  color: var(--texte);
+  background:
+    radial-gradient(1200px 700px at 78% -10%, rgba(34, 211, 238, 0.14), transparent 60%),
+    radial-gradient(900px 600px at 5% 105%, rgba(255, 201, 60, 0.1), transparent 62%),
+    linear-gradient(168deg, #04231a 0%, var(--vert-nuit) 55%, #020d09 100%);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+ol,
+ul {
+  margin: 0;
+}
+
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+}
+
+kbd {
+  font: inherit;
+  font-size: 0.82em;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--trait);
+  border-bottom-width: 2px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* --- Structure ----------------------------------------------------------- */
+
+.application {
+  --marge-application: clamp(12px, 1.4vw, 26px);
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: var(--marge-application);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.3vw, 22px);
+}
+
+/* En-tête + scène : un bloc qui, sur grand écran, occupe exactement la
+   hauteur de la fenêtre (voir « Adaptations d'écran »). */
+.ecran {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.3vw, 22px);
+}
+
+.scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 26vw, 440px);
+  gap: clamp(14px, 1.3vw, 22px);
+  align-items: start;
+}
+
+.scene__piste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border-radius: calc(var(--rayon) + 6px);
+  border: 1px solid var(--trait);
+  background: linear-gradient(160deg, rgba(8, 48, 31, 0.9), rgba(3, 21, 14, 0.9));
+  box-shadow: var(--ombre);
+  min-width: 0;
+}
+
+/* Contrairement au SVG (height: auto), un <Canvas> a besoin d'une hauteur
+   explicite pour occuper l'espace disponible. */
+.scene__piste canvas {
+  display: block;
+  width: 100%;
+  height: clamp(360px, 62vh, 760px);
+  border-radius: var(--rayon);
+}
+
+.scene__panneau {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.complements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(14px, 1.3vw, 22px);
+  align-items: start;
+}
+
+.pied {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--texte-doux);
+  padding: 4px 0 12px;
+}
+
+/* --- En-tête ------------------------------------------------------------- */
+
+.entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.4vw, 24px);
+  border-radius: calc(var(--rayon) + 6px);
+  border: 1px solid var(--trait);
+  background: linear-gradient(120deg, rgba(8, 48, 31, 0.95), rgba(4, 26, 18, 0.95));
+  box-shadow: var(--ombre);
+}
+
+.entete__identite {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.entete__logo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--jaune), var(--corail));
+  box-shadow: 0 0 0 4px rgba(255, 201, 60, 0.14);
+}
+
+.entete__logo-pouls {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--vert-nuit);
+  box-shadow: 0 0 0 5px rgba(3, 21, 14, 0.45);
+  animation: pouls 2s ease-in-out infinite;
+}
+
+.entete__titre {
+  font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  background: linear-gradient(96deg, var(--jaune), var(--vert-clair));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.entete__slogan {
+  font-size: 0.9rem;
+  color: var(--texte-doux);
+  letter-spacing: 0.04em;
+}
+
+.entete__etat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Bascule de langue NL/EN — compacte, elle vit dans l'entête. */
+.entete__langues {
+  display: flex;
+  gap: 4px;
+}
+
+.bouton--langue {
+  padding: 6px 10px;
+  min-height: 36px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+.bouton--langue.est-actif {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.16);
+  color: #c7f5ff;
+}
+
+.entete__horodatage {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.entete__etiquette {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texte-doux);
+}
+
+.entete__heure {
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--jaune);
+}
+
+.etiquette-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.1);
+  color: #bff3ff;
+}
+
+.etiquette-source--simulee {
+  border-color: rgba(255, 201, 60, 0.42);
+  background: rgba(255, 201, 60, 0.12);
+  color: #ffe9a8;
+}
+
+.etiquette-source__point {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pouls 1.8s ease-in-out infinite;
+}
+
+/* --- Boutons ------------------------------------------------------------- */
+
+.bouton {
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px;
+  border: 1px solid var(--trait);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--texte);
+  padding: 10px 16px;
+  /* Cible tactile ≥44px (WCAG/tablette) même pour les libellés courts. */
+  min-height: 44px;
+  transition:
+    transform 0.16s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bouton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.bouton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.bouton:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.bouton:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.bouton--principal {
+  border: none;
+  color: #10230f;
+  background: linear-gradient(120deg, var(--jaune), var(--vert-clair));
+  box-shadow: 0 8px 22px rgba(255, 201, 60, 0.24);
+  display: inline-block;
+  text-decoration: none;
+}
+
+.bouton--bascule.est-actif {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.16);
+  color: #c7f5ff;
+}
+
+.bouton--commande,
+.bouton--boost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.bouton--boost {
+  border-color: rgba(255, 201, 60, 0.45);
+  background: rgba(255, 201, 60, 0.14);
+  color: #ffe9a8;
+}
+
+.bouton--boost.est-actif {
+  background: rgba(255, 201, 60, 0.32);
+  box-shadow: 0 0 20px rgba(255, 201, 60, 0.45);
+}
+
+.bouton--repli {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  text-decoration: none;
+  border-color: rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.1);
+  color: #c7f5ff;
+}
+
+.bouton--repli:hover {
+  background: rgba(34, 211, 238, 0.18);
+}
+
+.reglages__aide {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--texte-doux);
+}
+
+.reglages {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reglages .carte__entete {
+  margin-bottom: 0;
+}
+
+.reglages__etat {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 1px solid currentColor;
+}
+
+.reglages__etat--fluide {
+  color: var(--vert-clair);
+  background: rgba(126, 231, 135, 0.1);
+}
+
+.reglages__etat--correct {
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.1);
+}
+
+.reglages__etat--tension {
+  color: var(--jaune);
+  background: rgba(255, 201, 60, 0.1);
+}
+
+.reglages__etat--critique {
+  color: var(--corail);
+  background: rgba(255, 107, 87, 0.1);
+}
+
+.reglages__section,
+.reglages__qualite {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.reglages__libelle {
+  color: var(--texte-doux);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reglages__effectifs,
+.reglages__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.bouton--charge {
+  flex: 1 1 90px;
+  padding-inline: 10px;
+  font-size: 0.8rem;
+}
+
+.bouton--charge.est-actif {
+  color: #10230f;
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--jaune), var(--vert-clair));
+}
+
+.reglages__mesures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.reglages__mesures > div {
+  min-width: 0;
+  padding: 9px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.reglages__mesures dt {
+  color: var(--texte-doux);
+  font-size: 0.66rem;
+  line-height: 1.2;
+}
+
+.reglages__mesures dd {
+  margin-top: 4px;
+  color: var(--jaune);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.reglages__gpu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgba(34, 211, 238, 0.07);
+  border: 1px solid rgba(34, 211, 238, 0.14);
+}
+
+.reglages__gpu span {
+  color: var(--texte-doux);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+}
+
+.reglages__gpu strong {
+  overflow: hidden;
+  color: #bff3ff;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reglages__actions .bouton {
+  flex: 1 1 150px;
+  padding-inline: 10px;
+  font-size: 0.78rem;
+}
+
+/* --- Cartes -------------------------------------------------------------- */
+
+.carte {
+  padding: clamp(13px, 1.1vw, 18px);
+  border-radius: var(--rayon);
+  border: 1px solid var(--trait);
+  background: linear-gradient(158deg, rgba(8, 48, 31, 0.86), rgba(3, 21, 14, 0.92));
+  box-shadow: var(--ombre);
+  min-width: 0;
+}
+
+.carte__entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.carte__titre {
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vert-clair);
+}
+
+.carte__note {
+  font-size: 0.78rem;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Sélecteur de période ------------------------------------------------ */
+
+.selecteur-periode {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--trait);
+  background: rgba(3, 21, 14, 0.7);
+}
+
+.selecteur-periode__onglet {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 10px 6px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--texte-doux);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.selecteur-periode__onglet:hover {
+  color: var(--texte);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.selecteur-periode__onglet.est-actif {
+  color: #10230f;
+  background: linear-gradient(120deg, var(--jaune), var(--vert-clair));
+}
+
+.selecteur-periode__onglet:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+/* --- Podium -------------------------------------------------------------- */
+
+.podium__marches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  gap: 8px;
+}
+
+.podium__marche {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  text-align: center;
+}
+
+.podium__medaille {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.podium__pastille {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #071a12;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.podium__nom {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.podium__equipe {
+  font-size: 0.68rem;
+  color: var(--texte-doux);
+}
+
+.podium__bloc {
+  margin-top: 4px;
+  width: 100%;
+  height: var(--hauteur-marche, 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 12px 12px 4px 4px;
+  border: 2px solid;
+  border-bottom: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.podium__rang {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.podium__score {
+  font-size: 0.74rem;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Classement ---------------------------------------------------------- */
+
+.classement__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.classement__ligne {
+  display: grid;
+  grid-template-columns: 24px 32px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'rang pastille identite chiffres'
+    'jauge jauge jauge jauge';
+  align-items: center;
+  gap: 6px 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.035);
+  transition: background-color 0.25s ease;
+}
+
+.classement__ligne:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.classement__ligne-bloc:first-child .classement__ligne {
+  border-color: rgba(255, 201, 60, 0.4);
+  background: rgba(255, 201, 60, 0.09);
+}
+
+.classement__ligne--cliquable {
+  cursor: pointer;
+}
+
+/* Kart choisi (suivi par la caméra / mis en évidence) — même cyan que le
+   cadre de sa plaque sur la piste. Déclaré après la règle du meneur pour
+   l'emporter quand c'est le leader qu'on choisit. */
+.classement__ligne-bloc .classement__ligne.classement__ligne--suivie {
+  border-color: rgba(34, 211, 238, 0.75);
+  background: rgba(34, 211, 238, 0.14);
+}
+
+.classement__ligne--cliquable:focus-visible,
+.chrono__ligne--cliquable:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+/* --- Détail d'équipe (mode équipes) -------------------------------------- */
+
+.classement__detail {
+  margin: 4px 2px 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.classement__detail-kpi {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.classement__detail-doel {
+  font-size: 0.74rem;
+  color: var(--texte-doux);
+}
+
+.classement__detail-mesures {
+  display: flex;
+  gap: 14px;
+  font-size: 0.74rem;
+  color: var(--texte-doux);
+}
+
+.classement__detail-mesures:empty {
+  display: none;
+}
+
+.classement__detail-titre {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texte-doux);
+}
+
+.classement__detail-vide {
+  font-size: 0.78rem;
+  color: var(--texte-doux);
+}
+
+.classement__detail-agents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.classement__detail-agents li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.classement__detail-agents li span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: var(--texte-doux);
+}
+
+.classement__detail-penalites {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.classement__detail-penalites li {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+}
+
+.classement__detail-penalites li strong {
+  color: #ff6b57;
+}
+
+.classement__detail-penalites li span {
+  color: var(--texte-doux);
+}
+
+.classement__rang {
+  grid-area: rang;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.classement__pastille {
+  grid-area: pastille;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #071a12;
+}
+
+.classement__identite {
+  grid-area: identite;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.classement__nom {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.classement__equipe {
+  font-size: 0.72rem;
+  color: var(--texte-doux);
+}
+
+.classement__chiffres {
+  grid-area: chiffres;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.25;
+}
+
+.classement__score {
+  font-size: 1.02rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.classement__tendance {
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.classement__tendance--hausse {
+  color: var(--vert-clair);
+}
+
+.classement__tendance--baisse {
+  color: var(--corail);
+}
+
+.classement__tendance--stable {
+  color: var(--texte-doux);
+}
+
+.classement__tours {
+  color: var(--jaune, #ffc93c);
+  font-weight: 700;
+}
+
+.classement__jauge {
+  grid-area: jauge;
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.classement__jauge-remplissage {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* --- Bandeau sous le circuit --------------------------------------------- */
+
+/* --- Dernier tour -------------------------------------------------------- */
+
+.dernier-tour {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 201, 60, 0.55);
+  background: rgba(46, 34, 6, 0.9);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+  /* C'est la pulsation qui accroche l'œil de côté, pas le texte. */
+  animation: pouls-dernier-tour 1.8s ease-in-out infinite;
+}
+
+.dernier-tour__drapeau {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  /* Damier miniature, dessiné en dégradés : pas d'image à charger. */
+  background-image:
+    linear-gradient(45deg, #f4f7f5 25%, transparent 25%, transparent 75%, #f4f7f5 75%),
+    linear-gradient(45deg, #f4f7f5 25%, transparent 25%, transparent 75%, #f4f7f5 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 4px 4px;
+  background-color: #10230f;
+}
+
+.dernier-tour__titre {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffc93c;
+}
+
+.dernier-tour__reste {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #ffe9a8;
+}
+
+@keyframes pouls-dernier-tour {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 201, 60, 0.42);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 201, 60, 0);
+  }
+}
+
+/* `prefers-reduced-motion` : le bandeau reste, la pulsation disparaît —
+   l'information est conservée, l'animation retirée. */
+@media (prefers-reduced-motion: reduce) {
+  .dernier-tour {
+    animation: none;
+  }
+}
+
+/* --- Repli du panneau latéral ------------------------------------------- */
+
+.scene--plein {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.bouton-vue {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px : cible tactile minimale, cohérente avec les boutons du panneau. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(3, 21, 14, 0.82);
+  backdrop-filter: blur(3px);
+  color: var(--doux, #9fb8ab);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.bouton-vue:hover,
+.bouton-vue:focus-visible {
+  border-color: rgba(126, 231, 135, 0.5);
+  background: rgba(8, 48, 31, 0.92);
+  color: #7ee787;
+}
+
+.bouton-vue svg {
+  transition: transform 0.2s ease;
+}
+
+/* Panneau visible : la flèche pointe vers lui (à droite) pour dire « je le
+   replie ». Panneau replié : elle pointe vers la gauche, « je le ramène ». */
+.bouton-vue--replie svg {
+  transform: rotate(180deg);
+}
+
+/* --- Tour de chronométrage (superposé à la vue 3D) ---------------------- */
+
+/* Conteneur de la vue : sert de repère de positionnement au tour de chrono,
+   qui se superpose au canvas sans entrer dans le flux. */
+.scene__vue {
+  position: relative;
+  min-width: 0;
+}
+
+.chrono {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  /* Purement informatif : ne doit jamais intercepter un clic destiné à la
+     scène 3D en dessous. */
+  pointer-events: none;
+}
+
+.chrono__titre {
+  margin: 0 0 5px 6px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texte-doux, #9dc3b0);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.chrono__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chrono__ligne {
+  display: grid;
+  grid-template-columns: 22px 5px minmax(0, 1fr) auto 26px;
+  white-space: nowrap;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px 5px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(3, 21, 14, 0.82);
+  backdrop-filter: blur(3px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.chrono__ligne--meneur {
+  border-color: rgba(255, 201, 60, 0.5);
+  background: rgba(46, 34, 6, 0.86);
+}
+
+/* Le tour de chrono ignore les clics (`.chrono`) ; seules ses lignes
+   cliquables les reçoivent — la scène 3D reste accessible autour. */
+.chrono__ligne--cliquable {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.chrono__ligne--cliquable:hover {
+  border-color: rgba(34, 211, 238, 0.45);
+}
+
+.chrono__ligne--suivie,
+.chrono__ligne--suivie.chrono__ligne--meneur {
+  border-color: rgba(34, 211, 238, 0.8);
+  background: rgba(6, 46, 54, 0.9);
+}
+
+/* Bandeau « Volgt … ✕ » : la caméra suit un kart choisi dans la liste. */
+.suivi-badge {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.6);
+  background: rgba(3, 21, 14, 0.88);
+  backdrop-filter: blur(3px);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.suivi-badge strong {
+  color: #c7f5ff;
+}
+
+.suivi-badge__fermer {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+}
+
+.suivi-badge__fermer:hover,
+.suivi-badge__fermer:focus-visible {
+  border-color: rgba(34, 211, 238, 0.6);
+  color: #c7f5ff;
+}
+
+.chrono__rang {
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--doux, #9fb8ab);
+}
+
+.chrono__ligne--meneur .chrono__rang {
+  color: #ffc93c;
+}
+
+.chrono__couleur {
+  width: 5px;
+  height: 20px;
+  border-radius: 999px;
+}
+
+.chrono__nom {
+  overflow: hidden;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chrono__ecart {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--doux, #9fb8ab);
+}
+
+.chrono__ligne--meneur .chrono__ecart {
+  color: #ffc93c;
+}
+
+.chrono__variation {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.chrono__variation--gain {
+  color: #7ee787;
+}
+
+.chrono__variation--perte {
+  color: #f87171;
+}
+
+/* Sous 640px le tour de chrono mangerait la piste : on le réduit à
+   l'essentiel plutôt que de le masquer, l'ordre de course restant
+   l'information la plus utile. */
+@media (max-width: 640px) {
+  .chrono__ligne {
+    grid-template-columns: 18px 4px minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 4px 7px 4px 5px;
+  }
+
+  .chrono__variation {
+    display: none;
+  }
+}
+
+.bandeau {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.bandeau__bloc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 13px;
+  border-radius: 12px;
+  border: 1px solid var(--trait);
+  background: rgba(3, 21, 14, 0.6);
+  min-width: 0;
+}
+
+.bandeau__bloc strong {
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bandeau__etiquette {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texte-doux);
+}
+
+/* --- Fil des faits de course --------------------------------------------- */
+
+.fil__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.fil__item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  border-left: 3px solid var(--trait);
+  background: rgba(255, 255, 255, 0.04);
+  animation: apparition 0.45s ease both;
+}
+
+.fil__item--record {
+  border-left-color: var(--jaune);
+}
+
+.fil__item--depassement {
+  border-left-color: var(--cyan);
+}
+
+.fil__item--boost {
+  border-left-color: var(--corail);
+}
+
+.fil__item--objectif {
+  border-left-color: var(--vert-clair);
+}
+
+.fil__item--ralentissement {
+  border-left-color: var(--violet);
+}
+
+.fil__icone {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.fil__texte {
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.fil__heure {
+  font-size: 0.72rem;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+}
+
+.fil__vide {
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+/* --- Commandes ----------------------------------------------------------- */
+
+.commandes__regle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  margin-bottom: 12px;
+  border-radius: 11px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px dashed rgba(255, 201, 60, 0.45);
+  background: rgba(255, 201, 60, 0.09);
+  color: #ffe9a8;
+}
+
+.commandes__grille {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.commandes__aide {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--texte-doux);
+}
+
+.commandes__aide strong {
+  color: var(--texte);
+}
+
+/* --- Explications -------------------------------------------------------- */
+
+.explications__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.explications__entree dt {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--jaune);
+  margin-bottom: 2px;
+}
+
+.explications__entree dd {
+  margin: 0;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--texte-doux);
+}
+
+/* --- Écran de repli (§5 du plan) ------------------------------------------ */
+
+.repli {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 24px;
+}
+
+.repli__logo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--jaune), var(--corail));
+  box-shadow: 0 0 0 5px rgba(255, 201, 60, 0.14);
+  margin-bottom: 6px;
+}
+
+.repli__logo-pouls {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--vert-nuit);
+  animation: pouls 2s ease-in-out infinite;
+}
+
+.repli__titre {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(96deg, var(--jaune), var(--vert-clair));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.repli__message {
+  max-width: 480px;
+  color: var(--texte-doux);
+  line-height: 1.6;
+}
+
+.repli__aide {
+  max-width: 420px;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+  line-height: 1.6;
+}
+
+/* --- Écran de chargement --------------------------------------------------- */
+
+.chargement {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 1.05rem;
+  color: var(--texte-doux);
+}
+
+.chargement__pouls {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--jaune), var(--corail));
+  animation: pouls 1.4s ease-in-out infinite;
+}
+
+/* --- Animations ---------------------------------------------------------- */
+
+@keyframes pouls {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+}
+
+@keyframes apparition {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Adaptations d'écran -------------------------------------------------- */
+
+/* Grand écran (mural) : l'écran tient pile dans la fenêtre, sans défilement.
+   Plutôt que de soustraire une hauteur d'en-tête devinée (qui varie avec la
+   largeur et la taille de police), la piste prend tout ce qui reste : la
+   rangée de la grille est bornée (`minmax(0, 1fr)`), la vue 3D s'étire
+   (`flex: 1`) et le canvas suit son conteneur. Le panneau défile en interne. */
+@media (min-width: 1181px) {
+  .ecran {
+    height: calc(100dvh - 2 * var(--marge-application));
+  }
+
+  .scene {
+    flex: 1;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .scene__piste {
+    min-height: 0;
+  }
+
+  .scene__vue {
+    flex: 1;
+    min-height: 360px;
+  }
+
+  .scene__piste canvas {
+    height: 100%;
+  }
+
+  .scene__panneau {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 1180px) {
+  .scene {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .entete {
+    align-items: flex-start;
+  }
+
+  .entete__etat {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .bouton--principal {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .commandes__grille {
+    grid-template-columns: 1fr;
+  }
+
+  .podium__nom {
+    font-size: 0.74rem;
+  }
+
+  .classement__ligne {
+    grid-template-columns: 22px 28px minmax(0, 1fr) auto;
+  }
+}
+
+@media (min-width: 1900px) {
+  :root {
+    font-size: 18px;
+  }
+}
+
+/* --- Préférence de réduction des animations -------------------------------
+   Ne couvre que les animations CSS (pulsations, fil d'événements). Le
+   mouvement de la scène 3D (karts, caméra) est piloté en JS par useFrame,
+   hors de portée du CSS : c'est Circuit3D.tsx et App.tsx qui lisent
+   useAnimationReduite() pour figer positions et désactiver l'orbite. */
+@media (prefers-reduced-motion: reduce) {
+  .entete__logo-pouls,
+  .etiquette-source__point,
+  .fil__item,
+  .chargement__pouls,
+  .repli__logo-pouls {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .classement__jauge-remplissage {
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* --- Carrousel des pages du mur ------------------------------------------ */
+
+.vue-bandeau {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  translate: -50% 0;
+  text-align: center;
+  padding: 8px 22px;
+  border-radius: 999px;
+  background: rgba(3, 21, 14, 0.72);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  border: 2px solid transparent; /* teinté à la couleur de la course */
+}
+
+.vue-bandeau__pastille {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+  vertical-align: baseline;
+}
+
+.vue-bandeau__nom {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.vue-bandeau__periode {
+  font-size: 0.72rem;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.vue-nav {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(3, 21, 14, 0.6);
+}
+
+.vue-nav button {
+  border: 0;
+  background: none;
+  color: rgba(248, 250, 252, 0.85);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.vue-nav button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.vue-points {
+  display: flex;
+  gap: 6px;
+}
+
+.vue-points span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(248, 250, 252, 0.35);
+  opacity: 0.45; /* chaque point porte la couleur de SA course */
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.vue-points span.est-active {
+  opacity: 1;
+  transform: scale(1.35);
+}
+
+/* --- Célébrations plein écran --------------------------------------------- */
+
+.celebration {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.celebration__carte {
+  text-align: center;
+  padding: 22px 44px;
+  border-radius: 24px;
+  border: 2px solid;
+  background: rgba(3, 21, 14, 0.82);
+  backdrop-filter: blur(8px);
+  animation: celebration-pop 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) both,
+             celebration-sortie 0.4s ease-in forwards;
+  animation-delay: 0s, 3.4s;
+  box-shadow: 0 0 60px rgba(255, 201, 60, 0.25);
+}
+
+.celebration--scorePlus .celebration__carte {
+  padding: 14px 30px;
+  animation-delay: 0s, 2.1s;
+}
+
+.celebration__eclat {
+  display: block;
+  font-size: 2.6rem;
+  animation: celebration-eclat 0.8s ease-out both;
+}
+
+.celebration--scorePlus .celebration__eclat { font-size: 1.8rem; }
+
+.celebration__titre {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.celebration--scorePlus .celebration__titre { font-size: 1.15rem; }
+
+.celebration__sous {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+@keyframes celebration-pop {
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes celebration-sortie {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+@keyframes celebration-eclat {
+  0% { transform: scale(0.4) rotate(-14deg); }
+  55% { transform: scale(1.35) rotate(6deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration__carte, .celebration__eclat { animation: none; }
+}
+
+/* --- Onglets Doelen / Winkel (entête) ------------------------------------ */
+
+.entete__onglets {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--trait);
+  background: rgba(3, 21, 14, 0.6);
+}
+
+.entete__onglet {
+  min-height: 38px;
+  padding: 6px 16px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.entete__onglet.est-actif {
+  border-color: rgba(255, 201, 60, 0.55);
+  background: rgba(255, 201, 60, 0.14);
+  color: #ffe39a;
+}
+
+/* La piste reste montée pendant la boutique, simplement cachée. */
+.scene.scene--masquee {
+  display: none;
+}
+
+/* --- Boutique (« Winkel ») ---------------------------------------------- */
+
+.winkel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+/* Sur grand écran, `.ecran` a la hauteur de la fenêtre : la boutique y
+   défile en interne plutôt que de pousser la page. */
+@media (min-width: 1181px) {
+  .winkel {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+.winkel--connexion {
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.winkel__connexion {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(420px, 100%);
+}
+
+.winkel__champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+.winkel__champ input {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--trait);
+  background: rgba(3, 21, 14, 0.8);
+  color: var(--texte);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.winkel__champ input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.winkel__champ input[aria-invalid='true'] {
+  border-color: var(--corail);
+}
+
+.winkel__erreur {
+  margin: 0;
+  color: var(--corail);
+  font-size: 0.88rem;
+}
+
+.winkel__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.winkel__bonjour {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.winkel__pastille {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #06140d;
+}
+
+.winkel__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .winkel__grille {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.winkel__colonne {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.winkel__solde {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 14px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--jaune);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Une pièce dessinée en CSS : pas d'icône externe à charger. */
+.winkel__piece {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #ffe9a6, #f2b51e 55%, #b07a08);
+  box-shadow: inset 0 0 0 3px rgba(122, 82, 0, 0.45);
+}
+
+.winkel__aujourdhui {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--trait);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.winkel__etiquette {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texte-doux);
+}
+
+.winkel__jauge {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.winkel__jauge span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f2b51e, var(--jaune));
+}
+
+.winkel__regle,
+.winkel__vide {
+  margin: 10px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--texte-doux);
+}
+
+.winkel__sous-titre {
+  margin: 18px 0 8px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texte-doux);
+}
+
+.winkel__historique,
+.winkel__vehicules {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.winkel__ligne {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 0.9rem;
+}
+
+.winkel__date {
+  font-size: 0.78rem;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+}
+
+.winkel__plus {
+  color: var(--vert-clair);
+}
+
+.winkel__moins {
+  color: var(--corail);
+}
+
+.winkel__vehicule {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.winkel__vehicule--actif {
+  border-color: rgba(255, 201, 60, 0.45);
+  background: rgba(255, 201, 60, 0.08);
+}
+
+.winkel__badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffe39a;
+  background: rgba(255, 201, 60, 0.16);
+}
+
+.winkel__badge--niveau {
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* Vignette rendue depuis le modèle 3D (360×240, affichée en 3:2). */
+.winkel__vignette {
+  flex: none;
+  width: 96px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.winkel__vignette--kart {
+  background:
+    radial-gradient(circle at 50% 55%, rgba(255, 201, 60, 0.35) 0 18px, transparent 19px),
+    rgba(255, 255, 255, 0.05);
+}
+
+.winkel__vehicule-nom {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.winkel__niveau {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.winkel__vehicule.est-verrouille .winkel__vignette {
+  filter: grayscale(1) brightness(0.6);
+}
+
+.winkel__vehicule.est-possede {
+  opacity: 0.75;
+}

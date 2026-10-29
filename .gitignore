@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Sauvegardes automatiques de Blender
+*.blend1
+
+.env.local
+.vercel
+
+# Piste Fab (licence Standard, détenue par le client) : la source préparée
+# est lourde (~50 Mo) et se régénère depuis le pack — voir scripts/preparer-piste.mjs
+assets-source/circuit/
+
+# Véhicules par niveau (modèles IA Tripo, ~55 Mo chacun) : sources brutes,
+# préparées par scripts/preparer-vehicules.mjs — voir public/modeles/LICENCES.md
+assets-source/vehicules/bruts/
+assets-source/vehicules/niveaux/

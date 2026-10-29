@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- translate="no" + meta notranslate : la traduction automatique de Chrome
+     réécrit les nœuds texte du DOM que React gère, et React plante alors en
+     NotFoundError (removeChild) au premier re-rendu — constaté en production
+     le 24/08. L'interface a son propre sélecteur NL/EN : on interdit la
+     traduction machine plutôt que de planter. -->
+<html lang="nl" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#03150e" />
+    <meta
+      name="description"
+      content="Bawaba Race — call-center agent performance turned into a 3D kart race."
+    />
+    <title>Bawaba Race</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
