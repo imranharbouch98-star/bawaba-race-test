@@ -37,3 +37,7 @@ assets-source/circuit/
 # préparées par scripts/preparer-vehicules.mjs — voir public/modeles/LICENCES.md
 assets-source/vehicules/bruts/
 assets-source/vehicules/niveaux/
+
+# Garage de la boutique : source brute (~57 Mo) et version préparée
+# (scripts/preparer-garage.mjs) — seule public/modeles/garage/ est commitée.
+assets-source/garage/

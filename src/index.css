@@ -1815,6 +1815,132 @@ kbd {
   color: #06140d;
 }
 
+/* --- Vitrine : le garage 3D en haut de la boutique (30/10) ---------------- */
+
+.vitrine {
+  position: relative;
+  flex: none;
+  height: clamp(340px, 62vh, 680px);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: radial-gradient(circle at 50% 40%, #6b4a33, #2a1a12);
+}
+
+.vitrine__canevas {
+  position: absolute !important;
+  inset: 0;
+}
+
+.vitrine__haut {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vitrine__compteur {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--texte);
+  background: rgba(3, 21, 14, 0.7);
+}
+
+.vitrine__fleche {
+  position: absolute;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(3, 21, 14, 0.72);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.vitrine__fleche:hover,
+.vitrine__fleche:focus-visible {
+  border-color: rgba(255, 201, 60, 0.7);
+  color: #ffe39a;
+}
+
+.vitrine__fleche--gauche {
+  left: 14px;
+}
+
+.vitrine__fleche--droite {
+  right: 14px;
+}
+
+.vitrine__bas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 28px 18px 16px;
+  background: linear-gradient(to top, rgba(3, 21, 14, 0.9), rgba(3, 21, 14, 0));
+}
+
+.vitrine__nom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.vitrine__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vitrine__defiler {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+/* Vignette + nom d'un véhicule de la boutique : bouton « voir en vitrine ». */
+.winkel__apercu {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.winkel__apercu:hover strong,
+.winkel__apercu:focus-visible strong {
+  color: #ffe39a;
+}
+
+.winkel__vehicule.est-montre {
+  border-color: rgba(255, 201, 60, 0.45);
+  background: rgba(255, 201, 60, 0.08);
+}
+
 .winkel__grille {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

@@ -45,6 +45,12 @@ const SANS_PALETTE = new Set(['vehicules/kart-race-pulse.glb'])
  * fusionne les maillages (join) et aplatit la hiérarchie (flatten) : les
  * roues seraient recollées à la caisse et ne tourneraient plus.
  */
+/**
+ * Taille de texture par asset (1024 par défaut). Le garage de la boutique
+ * remplit le haut de l'écran : à 1024, ses bocaux de bonbons sont flous.
+ */
+const TAILLE_TEXTURE = new Map([['garage/candy-garage.glb', '2048']])
+
 const HIERARCHIE_GARDEE = ['vehicules/niveaux/', 'vehicules/kart-race-pulse.glb']
 
 /**
@@ -94,6 +100,8 @@ const GRANDE_ETENDUE = new Map([
  */
 const IGNORES = new Set([
   'circuit/candy-source.glb',
+  // Source brute du garage de la boutique (scripts/preparer-garage.mjs).
+  'garage/garage-source.glb',
   // Anciennes pistes (forêt Fab, désert), retirées de l'application le 29/10 :
   // leurs sources peuvent encore traîner dans un `assets-source/` local.
   'circuit/drift-track.glb',
@@ -206,6 +214,7 @@ for (const chemin of modeles) {
     '1024',
   ]
   if (SANS_PALETTE.has(relatif)) arguments_.push('--palette', 'false')
+  if (TAILLE_TEXTURE.has(relatif)) arguments_[arguments_.indexOf('--texture-size') + 1] = TAILLE_TEXTURE.get(relatif)
   if (HIERARCHIE_GARDEE.some((dossier) => relatif.startsWith(dossier))) arguments_.push('--join', 'false', '--flatten', 'false')
 
   try {

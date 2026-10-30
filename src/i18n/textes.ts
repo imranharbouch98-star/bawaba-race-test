@@ -60,6 +60,13 @@ export interface Textes {
   boutiqueTitre: string
   boutiqueVide: string
   garageTitre: string
+  /** Vitrine de la boutique (garage 3D). */
+  apercuBoutique: string
+  vehiculePrecedent: string
+  vehiculeSuivant: string
+  terugNaarGarage: string
+  defilerNaarWinkel: string
+  bekijkInGarage: (nom: string) => string
   vehiculeEnUsage: string
   vehiculeChoisir: string
   acheterBouton: (prix: number) => string
@@ -249,6 +256,12 @@ const NL: Textes = {
   boutiqueTitre: 'Winkel',
   boutiqueVide: 'Binnenkort vind je hier nieuwe voertuigen om met je munten te kopen.',
   garageTitre: 'Garage',
+  apercuBoutique: 'Uit de winkel',
+  vehiculePrecedent: 'Vorige auto',
+  vehiculeSuivant: 'Volgende auto',
+  terugNaarGarage: 'Terug naar je garage',
+  defilerNaarWinkel: 'Scroll naar beneden voor de winkel ↓',
+  bekijkInGarage: (nom) => `Bekijk ${nom} in de garage`,
   vehiculeEnUsage: 'In gebruik',
   vehiculeChoisir: 'Kiezen',
   acheterBouton: (prix) => `Kopen · ${prix}`,
@@ -502,6 +515,12 @@ const EN: Textes = {
   boutiqueTitre: 'Shop',
   boutiqueVide: 'Soon you will find new vehicles here to buy with your coins.',
   garageTitre: 'Garage',
+  apercuBoutique: 'From the shop',
+  vehiculePrecedent: 'Previous car',
+  vehiculeSuivant: 'Next car',
+  terugNaarGarage: 'Back to your garage',
+  defilerNaarWinkel: 'Scroll down for the shop ↓',
+  bekijkInGarage: (nom) => `View ${nom} in the garage`,
   vehiculeEnUsage: 'In use',
   vehiculeChoisir: 'Select',
   acheterBouton: (prix) => `Buy · ${prix}`,
